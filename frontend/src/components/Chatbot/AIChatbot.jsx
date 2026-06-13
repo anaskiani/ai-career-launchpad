@@ -84,7 +84,7 @@ export const AIChatbot = () => {
       </div>
 
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 flex items-center gap-2">
-        <Sparkles size={16} /> Powered by local Ollama AI (Free & Private). Built-in fallback available if AI is offline.
+        <Sparkles size={16} /> Powered by Groq Cloud AI. Built-in fallback available if offline.
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
