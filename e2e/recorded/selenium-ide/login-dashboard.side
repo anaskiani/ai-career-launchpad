@@ -1,0 +1,158 @@
+{
+  "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "version": "2.0",
+  "name": "AI Career Launchpad - Login Dashboard",
+  "url": "http://localhost:5173",
+  "tests": [
+    {
+      "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "name": "Dev login to dashboard",
+      "commands": [
+        {
+          "id": "cmd-open-login",
+          "comment": "Open login page",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cmd-set-window",
+          "comment": "Set browser window size",
+          "command": "setWindowSize",
+          "target": "1400x900",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cmd-type-email",
+          "comment": "Enter dev email",
+          "command": "type",
+          "target": "css=[data-testid=\"login-email\"]",
+          "targets": [
+            ["css=[data-testid=\"login-email\"]", "css"],
+            ["id=login-email", "id"]
+          ],
+          "value": "dev@localhost.com"
+        },
+        {
+          "id": "cmd-type-password",
+          "comment": "Enter dev password",
+          "command": "type",
+          "target": "css=[data-testid=\"login-password\"]",
+          "targets": [
+            ["css=[data-testid=\"login-password\"]", "css"]
+          ],
+          "value": "devpassword"
+        },
+        {
+          "id": "cmd-click-submit",
+          "comment": "Submit login form",
+          "command": "click",
+          "target": "css=[data-testid=\"login-submit\"]",
+          "targets": [
+            ["css=[data-testid=\"login-submit\"]", "css"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "cmd-wait-dashboard",
+          "comment": "Wait for dashboard URL",
+          "command": "waitForLocation",
+          "target": "/dashboard",
+          "targets": [],
+          "value": "20000"
+        },
+        {
+          "id": "cmd-assert-welcome",
+          "comment": "Verify welcome heading visible",
+          "command": "assertElementPresent",
+          "target": "css=[data-testid=\"dashboard-welcome\"]",
+          "targets": [
+            ["css=[data-testid=\"dashboard-welcome\"]", "css"]
+          ],
+          "value": ""
+        },
+        {
+          "id": "cmd-assert-text",
+          "comment": "Verify Welcome text in heading",
+          "command": "assertText",
+          "target": "css=[data-testid=\"dashboard-welcome\"]",
+          "targets": [],
+          "value": "Welcome"
+        }
+      ]
+    },
+    {
+      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "name": "Invalid login stays on login page",
+      "commands": [
+        {
+          "id": "cmd2-open-login",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cmd2-type-email",
+          "comment": "",
+          "command": "type",
+          "target": "css=[data-testid=\"login-email\"]",
+          "targets": [],
+          "value": "invalid-user@example.com"
+        },
+        {
+          "id": "cmd2-type-password",
+          "comment": "",
+          "command": "type",
+          "target": "css=[data-testid=\"login-password\"]",
+          "targets": [],
+          "value": "wrong-password-xyz"
+        },
+        {
+          "id": "cmd2-click-submit",
+          "comment": "",
+          "command": "click",
+          "target": "css=[data-testid=\"login-submit\"]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cmd2-pause",
+          "comment": "Wait for error handling",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "cmd2-assert-url",
+          "comment": "User must remain on login",
+          "command": "assertLocation",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "d4e5f6a7-b8c9-0123-def0-234567890123",
+      "name": "Auth GUI Tests",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "c3d4e5f6-a7b8-9012-cdef-123456789012"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost:5173"
+  ],
+  "plugins": []
+}

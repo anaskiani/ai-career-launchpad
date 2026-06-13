@@ -1,0 +1,16 @@
+{
+  "name": "ai-career-launchpad",
+  "version": "1.0.0",
+  "description": "MERN stack application for AI-powered career development",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "start": "cd backend && npm start"
+  },
+  "keywords": ["MERN", "Career", "AI", "Resume", "Interview"],
+  "author": "",
+  "license": "MIT"
+}

@@ -1,0 +1,17 @@
+{
+  "name": "ai-career-launchpad-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:gui": "node run_all_tests.mjs",
+    "test:gui:all": "node run_all_tests.mjs",
+    "test:gui:report": "node run_all_tests.mjs",
+    "test:grid": "node test_grid_parallel.mjs",
+    "grid:up": "docker compose -f docker-compose.grid.yml up -d",
+    "grid:down": "docker compose -f docker-compose.grid.yml down",
+    "capture:terminal": "powershell -ExecutionPolicy Bypass -File capture_terminal_results.ps1"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.27.0"
+  }
+}
