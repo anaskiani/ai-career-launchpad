@@ -78,7 +78,7 @@ export const buildFallbackReply = ({ topic, message }) => {
   };
 
   const closing =
-    'This reply uses built-in coaching tips (no paid AI API). For deeper answers, add an OpenRouter key in backend `.env`.';
+    '\n\nThis reply uses built-in coaching tips (no paid AI API). For deeper answers, add a Groq API key in backend `.env` (or Vercel Environment Variables).';
 
   return [
     introByType[questionType] || introByType.general,
