@@ -2,17 +2,8 @@ import multer from 'multer';
 import path from 'path';
 import { AppError } from './errorHandler.js';
 
-// Storage config
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/avatars');
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname);
-    const filename = `${req.user.userId}-${Date.now()}${ext}`;
-    cb(null, filename);
-  }
-});
+// Storage config - Use memory for Serverless environments (like Vercel)
+const storage = multer.memoryStorage();
 
 // File filter — images only
 const fileFilter = (req, file, cb) => {

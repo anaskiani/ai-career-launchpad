@@ -80,24 +80,18 @@ export const uploadAvatar = async (req, res, next) => {
     if (rows.length === 0) {
       return next(new AppError('User not found', 404));
     }
-    const user = rows[0];
 
-    if (user.profile_image) {
-      const oldPath = path.join(process.cwd(), user.profile_image);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
-    }
+    // Convert memory buffer to Base64 data URI
+    const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
-    const avatarPath = `uploads/avatars/${req.file.filename}`;
     await pool.query('UPDATE users SET profile_image = ?, updated_at = NOW() WHERE id = ?', [
-      avatarPath,
+      base64Image,
       req.user.userId,
     ]);
 
     res.json({
       message: 'Avatar uploaded successfully',
-      profileImage: avatarPath
+      profileImage: base64Image
     });
   } catch (error) {
     next(error);
@@ -111,14 +105,6 @@ export const deleteAvatar = async (req, res, next) => {
     if (rows.length === 0) {
       return next(new AppError('User not found', 404));
     }
-    const user = rows[0];
-
-    if (user.profile_image) {
-      const filePath = path.join(process.cwd(), user.profile_image);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
 
     await pool.query('UPDATE users SET profile_image = "", updated_at = NOW() WHERE id = ?', [req.user.userId]);
 
@@ -131,17 +117,9 @@ export const deleteAvatar = async (req, res, next) => {
 export const deleteAccount = async (req, res, next) => {
   try {
     const pool = getPool();
-    const [rows] = await pool.query('SELECT profile_image FROM users WHERE id = ? LIMIT 1', [req.user.userId]);
+    const [rows] = await pool.query('SELECT id FROM users WHERE id = ? LIMIT 1', [req.user.userId]);
     if (rows.length === 0) {
       return next(new AppError('User not found', 404));
-    }
-    const user = rows[0];
-
-    if (user.profile_image) {
-      const filePath = path.join(process.cwd(), user.profile_image);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
     }
 
     await pool.query('DELETE FROM users WHERE id = ?', [req.user.userId]);
