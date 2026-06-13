@@ -57,7 +57,7 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Static file serving removed as Vercel uses stateless serverless functions
 
-await initializeDatabase();
+// Database is initialized via manual scripts, no need to run on serverless boot
 
 // Routes
 app.use('/api/auth', authRoutes);
