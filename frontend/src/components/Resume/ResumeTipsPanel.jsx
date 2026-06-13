@@ -11,9 +11,9 @@ export const ResumeTipsPanel = ({ form }) => {
           <Lightbulb size={18} className="text-amber-700" />
         </div>
         <div>
-          <h3 className="font-semibold text-amber-900">Resume tips (offline checklist)</h3>
+          <h3 className="font-semibold text-amber-900">Resume Tips</h3>
           <p className="text-sm text-amber-800 mt-0.5">
-            Built-in guidance — no paid AI required. Checklist strength: {checklistScore}%
+            Follow these best practices to improve your resume. Checklist strength: {checklistScore}%
           </p>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { ResumeSkillsSection } from './ResumeSkillsSection';
 import { ProjectsSection } from './ProjectsSection';
 import { CertificationsSection } from './CertificationsSection';
 import { ResumePreview } from './ResumePreview';
-import { ResumeTipsPanel } from './ResumeTipsPanel';
+
 import { generateResumePDF } from '../../utils/generateResumePDF';
 import {
   Save, Download, Eye, EyeOff, Loader2, CheckCircle, AlertCircle,
@@ -64,7 +64,7 @@ export const ResumeBuilder = () => {
 
   return (
     <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
-      <ResumeTipsPanel form={form} />
+
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
