@@ -18,13 +18,13 @@ export const protect = (req, res, next) => {
 };
 
 export const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
+  return jwt.sign({ userId }, process.env.JWT_SECRET || 'fallback_secret_key_123', {
+    expiresIn: process.env.JWT_EXPIRE || '7d'
   });
 };
 
 export const generateRefreshToken = (userId) => {
-  return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
+  return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET || 'fallback_refresh_secret_key_123', {
     expiresIn: '30d'
   });
 };
