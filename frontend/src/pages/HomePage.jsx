@@ -29,7 +29,7 @@ export const HomePage = () => {
               { title: 'Smart Resume Builder', desc: 'Create professional resumes instantly' },
               { title: 'Skill Gap Analysis', desc: 'Identify skills you need to improve' },
               { title: 'Job Finder', desc: 'Discover perfect career opportunities' },
-              { title: 'Mock Interviews', desc: 'Practice with AI-powered interviews' },
+              { title: 'Skill Quiz', desc: 'Test your knowledge with timed multiple-choice questions.' },
               { title: 'Career Chatbot', desc: 'Get personalized career guidance' },
               { title: 'Dashboard', desc: 'Track your progress and achievements' }
             ].map((feature, i) => (

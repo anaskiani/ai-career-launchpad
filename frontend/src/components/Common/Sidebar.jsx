@@ -17,7 +17,7 @@ export const Sidebar = () => {
     { icon: FileText, label: 'Resume Builder', path: '/resume' },
     { icon: Zap, label: 'Skill Gap', path: '/skills' },
     { icon: Briefcase, label: 'Job Finder', path: '/jobs' },
-    { icon: Users, label: 'Mock Interview', path: '/interview' },
+    { icon: Users, label: 'Skill Quiz', path: '/interview' },
     { icon: MessageSquare, label: 'AI Chatbot', path: '/chatbot' },
   ];
 
