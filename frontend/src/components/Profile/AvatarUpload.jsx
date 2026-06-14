@@ -11,7 +11,9 @@ export const AvatarUpload = ({ profileImage }) => {
   const [dragOver, setDragOver] = useState(false);
 
   const avatarUrl = profileImage
-    ? `${API_BASE}/${profileImage}`
+    ? profileImage.startsWith('data:image')
+      ? profileImage
+      : `${API_BASE}/${profileImage}`
     : null;
 
   const handleFileSelect = (file) => {
