@@ -9,6 +9,7 @@ export const authService = {
   logout: () => api.post('/auth/logout'),
   forgotPassword: (data) => api.post('/auth/forgot-password', data),
   resetPassword: (data) => api.post('/auth/reset-password', data),
+  googleLogin: (data) => api.post('/auth/google', data),
 };
 
 export const jobService = {

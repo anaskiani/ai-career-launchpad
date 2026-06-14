@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
+import { GoogleLogin } from '@react-oauth/google';
 
 const DEV_EMAIL = import.meta.env.VITE_DEV_LOGIN_EMAIL || 'dev@localhost.com';
 const DEV_PASSWORD = import.meta.env.VITE_DEV_LOGIN_PASSWORD || 'devpassword';
@@ -47,6 +48,24 @@ export const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await authService.googleLogin({ token: credentialResponse.credential });
+      login(response.data.user, response.data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.error?.message || 'Google Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    setError('Google Login failed');
   };
 
   const handleEmailVerification = async (e) => {
@@ -154,6 +173,21 @@ export const Login = () => {
             >
               {loading ? 'Logging in...' : 'Continue'}
             </button>
+            <div className="relative my-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              </div>
+            </div>
+            <div className="flex justify-center w-full">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={handleGoogleError}
+                useOneTap
+              />
+            </div>
           </form>
         )}
 

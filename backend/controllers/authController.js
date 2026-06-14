@@ -5,6 +5,9 @@ import { sendOTP, sendPasswordResetOTP } from '../utils/emailService.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { newId } from '../utils/dbHelpers.js';
 import { ensureDevUser, isDevBypassCredentials } from '../utils/devAuth.js';
+import { OAuth2Client } from 'google-auth-library';
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Generate OTP
 const generateOTP = () => {
@@ -225,6 +228,70 @@ export const verifySecurityPIN = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+export const googleLogin = async (req, res, next) => {
+  try {
+    const { token: googleToken } = req.body;
+    if (!googleToken) {
+      return next(new AppError('No Google token provided', 400));
+    }
+
+    // Verify the Google token
+    const ticket = await googleClient.verifyIdToken({
+      idToken: googleToken,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+    
+    const pool = getPool();
+    
+    // Check if user exists by email
+    const [existingUsers] = await pool.query('SELECT * FROM users WHERE email = ? LIMIT 1', [email]);
+    
+    let user;
+    if (existingUsers.length > 0) {
+      user = existingUsers[0];
+      // Update google_id and profile image if not already set
+      if (!user.google_id || !user.profile_image) {
+        await pool.query(
+          'UPDATE users SET google_id = COALESCE(google_id, ?), profile_image = COALESCE(profile_image, ?), email_verified = 1 WHERE id = ?',
+          [googleId, picture, user.id]
+        );
+      }
+    } else {
+      // Create new user
+      const userId = newId();
+      await pool.query(
+        `INSERT INTO users (
+          id, name, email, google_id, profile_image, email_verified,
+          skills_json, education_json, work_experience_json
+        ) VALUES (?, ?, ?, ?, ?, 1, JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY())`,
+        [userId, name, email, googleId, picture]
+      );
+      user = { id: userId, name, email, profile_image: picture };
+    }
+
+    const jwtToken = generateToken(user.id);
+    const refreshToken = generateRefreshToken(user.id);
+
+    res.json({
+      message: 'Login successful',
+      token: jwtToken,
+      refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        profileImage: user.profile_image,
+      },
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    next(new AppError(`Google login failed: ${error.message}`, 400));
   }
 };
 
