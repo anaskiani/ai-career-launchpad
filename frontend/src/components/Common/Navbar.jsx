@@ -1,7 +1,10 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut, Menu, Rocket, X } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
+import { useProfileStore } from '../../context/profileStore';
+
+const API_BASE = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 const desktopNavClass = ({ isActive }) =>
   [
@@ -23,7 +26,21 @@ const mobileNavClass = ({ isActive }) =>
 export const Navbar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { profile, fetchProfile } = useProfileStore();
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    if (user && !profile) {
+      fetchProfile();
+    }
+  }, [user, profile, fetchProfile]);
+
+  const profileImage = profile?.profileImage || user?.profileImage;
+  const avatarUrl = profileImage
+    ? profileImage.startsWith('data:image')
+      ? profileImage
+      : `${API_BASE}/${profileImage}`
+    : null;
 
   const handleLogout = () => {
     logout();
@@ -68,9 +85,13 @@ export const Navbar = () => {
                   <p className="text-sm font-semibold leading-none text-slate-800">{user.name}</p>
                   <p className="mt-0.5 max-w-[160px] truncate text-xs text-slate-500">{user.email}</p>
                 </div>
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 text-sm font-bold text-blue-700 ring-2 ring-white">
-                  {user.name?.charAt(0)?.toUpperCase() || 'U'}
-                </span>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Profile" className="h-9 w-9 rounded-full object-cover ring-2 ring-white" />
+                ) : (
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-indigo-100 text-sm font-bold text-blue-700 ring-2 ring-white">
+                    {user.name?.charAt(0)?.toUpperCase() || 'U'}
+                  </span>
+                )}
                 <button
                   type="button"
                   onClick={handleLogout}
