@@ -83,9 +83,7 @@ export const AIChatbot = () => {
         </div>
       </div>
 
-      <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-700 flex items-center gap-2">
-        <Sparkles size={16} /> Powered by Groq Cloud AI. Built-in fallback available if offline.
-      </div>
+
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="border-b border-gray-100 p-4 flex flex-col md:flex-row md:items-center gap-3">
