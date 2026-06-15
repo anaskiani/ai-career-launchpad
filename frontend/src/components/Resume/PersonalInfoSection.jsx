@@ -4,8 +4,19 @@ export const PersonalInfoSection = ({ data, onChange }) => {
   const update = (field, value) => {
     if (field === 'fullName') {
       value = value.replace(/[^a-zA-Z\s\-']/g, '');
+      if (value.length > 0 && !/^[a-zA-Z]/.test(value)) {
+        value = value.replace(/^[^a-zA-Z]+/, '');
+      }
     } else if (field === 'phone') {
       value = value.replace(/[^\d\s+()-]/g, '');
+      if (value.length > 0 && !/^[\d+]/.test(value)) {
+        value = value.replace(/^[^(\d+)]+/, '');
+      }
+      if (value.length > 20) value = value.substring(0, 20);
+    } else if (field === 'location' || field === 'summary') {
+      if (value.length > 0 && !/^[a-zA-Z0-9]/.test(value)) {
+        value = value.replace(/^[^a-zA-Z0-9]+/, '');
+      }
     }
     onChange(`personalInfo.${field}`, value);
   };
