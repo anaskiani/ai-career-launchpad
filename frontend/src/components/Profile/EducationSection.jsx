@@ -51,7 +51,15 @@ export const EducationSection = ({ education = [], onChange }) => {
   };
 
   const updateDraft = (field, value) => {
-    setDraft((prev) => ({ ...prev, [field]: value }));
+    setDraft((prev) => {
+      const next = { ...prev, [field]: value };
+      if (field === 'startYear' && !next.current && next.endYear && next.startYear > next.endYear) {
+        next.endYear = next.startYear;
+      } else if (field === 'endYear' && next.startYear && next.endYear < next.startYear) {
+        next.startYear = next.endYear;
+      }
+      return next;
+    });
   };
 
   const renderForm = () => (

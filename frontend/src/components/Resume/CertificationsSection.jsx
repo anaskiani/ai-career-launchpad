@@ -12,6 +12,25 @@ export const CertificationsSection = ({ data = [], onChange }) => {
   const startEdit = (i) => { setDraft({ ...data[i] }); setEditIdx(i); setIsAdding(false); };
   const cancel = () => { setIsAdding(false); setEditIdx(null); };
 
+  const updateDraft = (field, value) => {
+    setDraft((prev) => {
+      const next = { ...prev, [field]: value };
+      if (field === 'issueDate' && next.expiryDate && next.issueDate > next.expiryDate) {
+        next.expiryDate = next.issueDate;
+      } else if (field === 'expiryDate' && next.issueDate && next.expiryDate < next.issueDate) {
+        next.issueDate = next.expiryDate;
+      }
+      return next;
+    });
+  };
+
+  const handleUrlBlur = (e) => {
+    const val = e.target.value;
+    if (val && !/^https?:\/\//i.test(val)) {
+      setDraft((prev) => ({ ...prev, url: `https://${val}` }));
+    }
+  };
+
   const save = () => {
     if (!draft.title.trim()) return;
     if (isAdding) onChange([...data, draft]);
@@ -35,23 +54,23 @@ export const CertificationsSection = ({ data = [], onChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Certification Title *</label>
-          <input type="text" value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} className={inputClass} placeholder="AWS Solutions Architect" />
+          <input type="text" value={draft.title} onChange={(e) => updateDraft('title', e.target.value)} className={inputClass} placeholder="AWS Solutions Architect" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Issuing Organization</label>
-          <input type="text" value={draft.issuer} onChange={(e) => setDraft({ ...draft, issuer: e.target.value })} className={inputClass} placeholder="Amazon Web Services" />
+          <input type="text" value={draft.issuer} onChange={(e) => updateDraft('issuer', e.target.value)} className={inputClass} placeholder="Amazon Web Services" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Issue Date</label>
-          <input type="month" value={draft.issueDate ? draft.issueDate.substring(0, 7) : ''} onChange={(e) => setDraft({ ...draft, issueDate: e.target.value })} className={inputClass} />
+          <input type="month" value={draft.issueDate ? draft.issueDate.substring(0, 7) : ''} onChange={(e) => updateDraft('issueDate', e.target.value)} className={inputClass} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
-          <input type="month" value={draft.expiryDate ? draft.expiryDate.substring(0, 7) : ''} onChange={(e) => setDraft({ ...draft, expiryDate: e.target.value })} className={inputClass} />
+          <input type="month" value={draft.expiryDate ? draft.expiryDate.substring(0, 7) : ''} onChange={(e) => updateDraft('expiryDate', e.target.value)} className={inputClass} />
         </div>
         <div className="md:col-span-2">
           <label className="block text-sm font-medium text-gray-700 mb-1">Credential URL</label>
-          <input type="url" value={draft.url} onChange={(e) => setDraft({ ...draft, url: e.target.value })} className={inputClass} placeholder="https://credential.net/..." />
+          <input type="url" value={draft.url} onChange={(e) => updateDraft('url', e.target.value)} onBlur={handleUrlBlur} className={inputClass} placeholder="https://credential.net/..." />
         </div>
       </div>
       <div className="flex gap-2">

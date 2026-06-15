@@ -16,7 +16,7 @@ const generateOTP = () => {
 
 export const register = async (req, res, next) => {
   try {
-    const { name, email, password, securityQuestion, securityPIN } = req.body;
+    const { name, email, password } = req.body;
     const pool = getPool();
 
     const [existingRows] = await pool.query('SELECT id FROM users WHERE email = ? LIMIT 1', [email]);
@@ -26,8 +26,6 @@ export const register = async (req, res, next) => {
 
     const userId = newId();
     const passwordHash = await bcrypt.hash(password, 10);
-    const securityAnswerHash = await bcrypt.hash(securityQuestion.answer, 10);
-    const securityPinHash = await bcrypt.hash(securityPIN, 10);
 
     const otp = generateOTP();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -38,7 +36,7 @@ export const register = async (req, res, next) => {
         email_otp_code, email_otp_expires_at,
         security_question_text, security_question_answer_hash, security_pin_hash,
         skills_json, education_json, work_experience_json
-      ) VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?, JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY())`,
+      ) VALUES (?, ?, ?, ?, 0, ?, ?, NULL, NULL, NULL, JSON_ARRAY(), JSON_ARRAY(), JSON_ARRAY())`,
       [
         userId,
         name,
@@ -46,9 +44,6 @@ export const register = async (req, res, next) => {
         passwordHash,
         otp,
         expiresAt,
-        securityQuestion.question,
-        securityAnswerHash,
-        securityPinHash,
       ]
     );
 
@@ -155,69 +150,12 @@ export const login = async (req, res, next) => {
       });
     }
 
-    res.json({
-      message: 'Password verified',
-      step: 'securityQuestion',
-      securityQuestion: user.security_question_text,
-      userId: user.id,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const verifySecurityQuestion = async (req, res, next) => {
-  try {
-    const { userId, answer } = req.body;
-    const pool = getPool();
-
-    const [rows] = await pool.query(
-      'SELECT id, security_question_answer_hash FROM users WHERE id = ? LIMIT 1',
-      [userId]
-    );
-    if (rows.length === 0) {
-      return next(new AppError('User not found', 404));
-    }
-
-    const user = rows[0];
-    const isValid = await bcrypt.compare(answer, user.security_question_answer_hash);
-    if (!isValid) {
-      return next(new AppError('Incorrect answer', 401));
-    }
-
-    res.json({
-      message: 'Security question verified',
-      step: 'securityPIN',
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const verifySecurityPIN = async (req, res, next) => {
-  try {
-    const { userId, pin } = req.body;
-    const pool = getPool();
-
-    const [rows] = await pool.query(
-      'SELECT id, name, email, security_pin_hash FROM users WHERE id = ? LIMIT 1',
-      [userId]
-    );
-    if (rows.length === 0) {
-      return next(new AppError('User not found', 404));
-    }
-
-    const user = rows[0];
-    const isValid = await bcrypt.compare(pin, user.security_pin_hash);
-    if (!isValid) {
-      return next(new AppError('Incorrect PIN', 401));
-    }
-
     const token = generateToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
 
     res.json({
       message: 'Login successful',
+      step: 'complete',
       token,
       refreshToken,
       user: {
@@ -230,6 +168,8 @@ export const verifySecurityPIN = async (req, res, next) => {
     next(error);
   }
 };
+
+
 
 export const googleLogin = async (req, res, next) => {
   try {

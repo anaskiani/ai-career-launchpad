@@ -1,7 +1,20 @@
 import { User, Mail, Phone, MapPin, Linkedin, Github } from 'lucide-react';
 
 export const PersonalInfoSection = ({ data, onChange }) => {
-  const update = (field, value) => onChange(`personalInfo.${field}`, value);
+  const update = (field, value) => {
+    if (field === 'fullName') {
+      value = value.replace(/[^a-zA-Z\s\-']/g, '');
+    } else if (field === 'phone') {
+      value = value.replace(/[^\d\s+()-]/g, '');
+    }
+    onChange(`personalInfo.${field}`, value);
+  };
+
+  const handleUrlBlur = (field, value) => {
+    if (value && !/^https?:\/\//i.test(value)) {
+      onChange(`personalInfo.${field}`, `https://${value}`);
+    }
+  };
 
   const inputClass =
     'w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow bg-white';
@@ -67,6 +80,7 @@ export const PersonalInfoSection = ({ data, onChange }) => {
             type="url"
             value={data.linkedin || ''}
             onChange={(e) => update('linkedin', e.target.value)}
+            onBlur={(e) => handleUrlBlur('linkedin', e.target.value)}
             className={inputClass}
             placeholder="https://linkedin.com/in/username"
           />
@@ -78,6 +92,7 @@ export const PersonalInfoSection = ({ data, onChange }) => {
             type="url"
             value={data.github || ''}
             onChange={(e) => update('github', e.target.value)}
+            onBlur={(e) => handleUrlBlur('github', e.target.value)}
             className={inputClass}
             placeholder="https://github.com/username"
           />

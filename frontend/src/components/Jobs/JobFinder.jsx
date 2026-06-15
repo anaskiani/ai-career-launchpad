@@ -67,14 +67,12 @@ export const JobFinder = () => {
 
   const handleSearch = (event) => {
     event.preventDefault();
-    setFilters({
-      ...draftFilters,
-      page: 1,
-    });
-    fetchJobs({
-      ...draftFilters,
-      page: 1,
-    });
+    const keyword = draftFilters.keyword?.trim() || '';
+    const location = draftFilters.location?.trim() || '';
+    const cleanFilters = { keyword, location, type: draftFilters.type };
+    setDraftFilters(cleanFilters);
+    setFilters({ ...cleanFilters, page: 1 });
+    fetchJobs({ ...cleanFilters, page: 1 });
   };
 
   const handleToggleSave = async (job, event) => {
@@ -109,6 +107,7 @@ export const JobFinder = () => {
                 onChange={(e) => setDraftFilters((state) => ({ ...state, keyword: e.target.value }))}
                 className="input pl-10"
                 placeholder="e.g. frontend developer, data analyst"
+                maxLength={100}
               />
             </div>
           </div>
@@ -120,6 +119,7 @@ export const JobFinder = () => {
               onChange={(e) => setDraftFilters((state) => ({ ...state, location: e.target.value }))}
               className="input"
               placeholder="e.g. Lahore, Remote"
+              maxLength={100}
             />
           </div>
 

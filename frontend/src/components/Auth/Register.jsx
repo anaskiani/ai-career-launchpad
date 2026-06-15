@@ -10,38 +10,28 @@ export const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    securityQuestion: { question: '', answer: '' },
-    securityPIN: ''
+    password: ''
   });
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const securityQuestions = [
-    'What was the name of your first pet?',
-    'What is your mother\'s maiden name?',
-    'What city were you born in?',
-    'What was your first school?'
-  ];
+
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    
+    if (name === 'name') {
+      value = value.replace(/[^a-zA-Z\s]/g, '');
+    }
+
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
   };
 
-  const handleSecurityChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      securityQuestion: {
-        ...prev.securityQuestion,
-        [field]: value
-      }
-    }));
-  };
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -139,45 +129,7 @@ export const Register = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Security Question</label>
-              <select
-                value={formData.securityQuestion.question}
-                onChange={(e) => handleSecurityChange('question', e.target.value)}
-                className="input"
-                required
-              >
-                <option value="">Select a question</option>
-                {securityQuestions.map(q => (
-                  <option key={q} value={q}>{q}</option>
-                ))}
-              </select>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-2">Answer</label>
-              <input
-                type="text"
-                value={formData.securityQuestion.answer}
-                onChange={(e) => handleSecurityChange('answer', e.target.value)}
-                className="input"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Security PIN (4 digits)</label>
-              <input
-                type="password"
-                name="securityPIN"
-                value={formData.securityPIN}
-                onChange={handleInputChange}
-                className="input"
-                placeholder="0000"
-                maxLength="4"
-                required
-              />
-            </div>
 
             <button
               type="submit"

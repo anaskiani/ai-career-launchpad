@@ -34,7 +34,8 @@ export const AIChatbot = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!message.trim()) {
+    const trimmed = message.trim();
+    if (!trimmed) {
       return;
     }
 
@@ -45,15 +46,14 @@ export const AIChatbot = () => {
       _id: `temp-user-${Date.now()}`,
       role: 'user',
       topic,
-      content: message,
+      content: trimmed,
     };
 
     setMessages((current) => [...current, userMessage]);
-    const currentMessage = message;
     setMessage('');
 
     try {
-      const res = await aiService.chat(currentMessage, { topic });
+      const res = await aiService.chat(trimmed, { topic });
       setFallbackUsed(Boolean(res.data.fallbackUsed));
       setMessages((current) => [
         ...current,
@@ -145,6 +145,7 @@ export const AIChatbot = () => {
               rows={3}
               className="input min-h-[100px]"
               placeholder="Ask about your resume, interview prep, skills, jobs, or your career path..."
+              maxLength={2000}
             />
             <button
               type="submit"

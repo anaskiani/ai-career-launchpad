@@ -15,12 +15,8 @@ export const Login = () => {
   const [email, setEmail] = useState(IS_DEV ? DEV_EMAIL : '');
   const [password, setPassword] = useState(IS_DEV ? DEV_PASSWORD : '');
   const [otp, setOtp] = useState('');
-  const [securityAnswer, setSecurityAnswer] = useState('');
-  const [securityPIN, setSecurityPIN] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [userId, setUserId] = useState('');
-  const [securityQuestion, setSecurityQuestion] = useState('');
 
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
@@ -38,10 +34,6 @@ export const Login = () => {
 
       if (response.data.step === 'emailVerification') {
         setStep('emailVerification');
-      } else if (response.data.step === 'securityQuestion') {
-        setUserId(response.data.userId);
-        setSecurityQuestion(response.data.securityQuestion);
-        setStep('securityQuestion');
       }
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Login failed');
@@ -84,36 +76,7 @@ export const Login = () => {
     }
   };
 
-  const handleSecurityQuestion = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
 
-    try {
-      await authService.verifySecurityQuestion({ userId, answer: securityAnswer });
-      setStep('securityPIN');
-    } catch (err) {
-      setError(err.response?.data?.error?.message || 'Verification failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSecurityPIN = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await authService.verifySecurityPIN({ userId, pin: securityPIN });
-      login(response.data.user, response.data.token);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.error?.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -215,54 +178,7 @@ export const Login = () => {
           </form>
         )}
 
-        {step === 'securityQuestion' && (
-          <form onSubmit={handleSecurityQuestion} className="space-y-4">
-            <p className="text-gray-600 font-medium">{securityQuestion}</p>
-            <div>
-              <label htmlFor="security-answer" className="block text-sm font-medium mb-2">Your Answer</label>
-              <input
-                id="security-answer"
-                type="text"
-                value={securityAnswer}
-                onChange={(e) => setSecurityAnswer(e.target.value)}
-                className="input"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary w-full"
-            >
-              {loading ? 'Verifying...' : 'Continue'}
-            </button>
-          </form>
-        )}
 
-        {step === 'securityPIN' && (
-          <form onSubmit={handleSecurityPIN} className="space-y-4">
-            <p className="text-gray-600">Enter your Security PIN</p>
-            <div>
-              <label className="block text-sm font-medium mb-2">Security PIN</label>
-              <input
-                type="password"
-                value={securityPIN}
-                onChange={(e) => setSecurityPIN(e.target.value)}
-                className="input"
-                placeholder="0000"
-                maxLength="4"
-                required
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="btn btn-primary w-full"
-            >
-              {loading ? 'Logging in...' : 'Complete Login'}
-            </button>
-          </form>
-        )}
 
         <p className="text-center text-gray-600 mt-4">
           <a href="/forgot-password" className="text-blue-600 hover:underline">

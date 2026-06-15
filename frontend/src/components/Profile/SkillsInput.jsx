@@ -51,7 +51,7 @@ export const SkillsInput = ({ skills = [], onChange, max = 20 }) => {
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={(e) => setInput(e.target.value.replace(/[^a-zA-Z\s\-']/g, ''))}
           onKeyDown={handleKeyDown}
           placeholder={skills.length >= max ? `Max ${max} skills` : 'Type a skill and press Enter'}
           disabled={skills.length >= max}

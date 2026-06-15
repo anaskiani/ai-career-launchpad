@@ -20,6 +20,18 @@ export const ProjectsSection = ({ data = [], onChange }) => {
     cancel();
   };
 
+  const handleUrlBlur = (e) => {
+    const val = e.target.value;
+    if (val && !/^https?:\/\//i.test(val)) {
+      setDraft({ ...draft, url: `https://${val}` });
+    }
+  };
+    if (!draft.title.trim()) return;
+    if (isAdding) onChange([...data, draft]);
+    else { const u = [...data]; u[editIdx] = draft; onChange(u); }
+    cancel();
+  };
+
   const remove = (i) => { onChange(data.filter((_, j) => j !== i)); if (editIdx === i) cancel(); };
 
   const addTech = () => {
@@ -44,7 +56,7 @@ export const ProjectsSection = ({ data = [], onChange }) => {
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Project URL</label>
-          <input type="url" value={draft.url} onChange={(e) => setDraft({ ...draft, url: e.target.value })} className={inputClass} placeholder="https://github.com/..." />
+          <input type="url" value={draft.url} onChange={(e) => setDraft({ ...draft, url: e.target.value })} onBlur={handleUrlBlur} className={inputClass} placeholder="https://github.com/..." />
         </div>
       </div>
       <div>

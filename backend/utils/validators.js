@@ -3,9 +3,7 @@ import { body, validationResult } from 'express-validator';
 export const validateRegister = [
   body('name').notEmpty().withMessage('Name is required'),
   body('email').isEmail().withMessage('Valid email is required'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-  body('securityQuestion').notEmpty().withMessage('Security question answer is required'),
-  body('securityPIN').isLength({ min: 4 }).withMessage('Security PIN must be at least 4 digits')
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
 ];
 
 export const validateLogin = [

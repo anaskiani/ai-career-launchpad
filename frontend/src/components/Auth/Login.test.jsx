@@ -26,8 +26,6 @@ vi.mock('../../services/authService', () => ({
   authService: {
     login: vi.fn(),
     verifyEmail: vi.fn(),
-    verifySecurityQuestion: vi.fn(),
-    verifySecurityPIN: vi.fn(),
   },
 }));
 
@@ -79,20 +77,4 @@ describe('Login', () => {
     expect(navigate).not.toHaveBeenCalled();
   });
 
-  it('moves to security question step when additional verification is required', async () => {
-    const user = userEvent.setup();
-    authService.login.mockResolvedValue({
-      data: {
-        step: 'securityQuestion',
-        userId: 'user-1',
-        securityQuestion: 'What is your favorite subject?',
-      },
-    });
-
-    renderLogin();
-    await user.click(screen.getByRole('button', { name: /continue/i }));
-
-    expect(await screen.findByText('What is your favorite subject?')).toBeInTheDocument();
-    expect(screen.getByLabelText(/your answer/i)).toBeInTheDocument();
-  });
 });

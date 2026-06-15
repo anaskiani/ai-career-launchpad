@@ -59,7 +59,7 @@ export const ResumeSkillsSection = ({ data = [], onChange }) => {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value.replace(/[^a-zA-Z\s\-']/g, ''))}
             onKeyDown={handleKeyDown}
             className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
             placeholder="e.g. React, Python, AWS"

@@ -15,6 +15,18 @@ export const ExperienceSection = ({ data = [], onChange }) => {
   const startEdit = (i) => { setDraft({ ...data[i] }); setEditIdx(i); setIsAdding(false); };
   const cancel = () => { setIsAdding(false); setEditIdx(null); };
 
+  const updateDraft = (field, value) => {
+    setDraft((prev) => {
+      const next = { ...prev, [field]: value };
+      if (field === 'startDate' && !next.currentlyWorking && next.endDate && next.startDate > next.endDate) {
+        next.endDate = next.startDate;
+      } else if (field === 'endDate' && next.startDate && next.endDate < next.startDate) {
+        next.startDate = next.endDate;
+      }
+      return next;
+    });
+  };
+
   const save = () => {
     if (!draft.position.trim() || !draft.company.trim()) return;
     if (isAdding) onChange([...data, draft]);
@@ -38,28 +50,28 @@ export const ExperienceSection = ({ data = [], onChange }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Position *</label>
-          <input type="text" value={draft.position} onChange={(e) => setDraft({ ...draft, position: e.target.value })} className={inputClass} placeholder="Software Engineer" />
+          <input type="text" value={draft.position} onChange={(e) => updateDraft('position', e.target.value)} className={inputClass} placeholder="Software Engineer" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Company *</label>
-          <input type="text" value={draft.company} onChange={(e) => setDraft({ ...draft, company: e.target.value })} className={inputClass} placeholder="Google" />
+          <input type="text" value={draft.company} onChange={(e) => updateDraft('company', e.target.value)} className={inputClass} placeholder="Google" />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-          <input type="month" value={draft.startDate ? draft.startDate.substring(0, 7) : ''} onChange={(e) => setDraft({ ...draft, startDate: e.target.value })} className={inputClass} />
+          <input type="month" value={draft.startDate ? draft.startDate.substring(0, 7) : ''} onChange={(e) => updateDraft('startDate', e.target.value)} className={inputClass} />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-          <input type="month" value={draft.currentlyWorking ? '' : (draft.endDate ? draft.endDate.substring(0, 7) : '')} onChange={(e) => setDraft({ ...draft, endDate: e.target.value })} disabled={draft.currentlyWorking} className={`${inputClass} disabled:bg-gray-100`} />
+          <input type="month" value={draft.currentlyWorking ? '' : (draft.endDate ? draft.endDate.substring(0, 7) : '')} onChange={(e) => updateDraft('endDate', e.target.value)} disabled={draft.currentlyWorking} className={`${inputClass} disabled:bg-gray-100`} />
         </div>
       </div>
       <label className="flex items-center gap-2 cursor-pointer">
-        <input type="checkbox" checked={draft.currentlyWorking} onChange={(e) => setDraft({ ...draft, currentlyWorking: e.target.checked })} className="w-4 h-4 rounded border-gray-300 text-blue-600" />
+        <input type="checkbox" checked={draft.currentlyWorking} onChange={(e) => updateDraft('currentlyWorking', e.target.checked)} className="w-4 h-4 rounded border-gray-300 text-blue-600" />
         <span className="text-sm text-gray-600">Currently working here</span>
       </label>
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-        <textarea value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} className={`${inputClass} resize-none`} rows="3" placeholder="Key responsibilities and achievements..." />
+        <textarea value={draft.description} onChange={(e) => updateDraft('description', e.target.value)} className={`${inputClass} resize-none`} rows="3" placeholder="Key responsibilities and achievements..." />
       </div>
       <div className="flex gap-2">
         <button type="button" onClick={save} disabled={!draft.position.trim() || !draft.company.trim()} className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 text-sm font-medium"><Check size={16} /> Save</button>

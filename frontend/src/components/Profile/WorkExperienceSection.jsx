@@ -51,7 +51,15 @@ export const WorkExperienceSection = ({ workExperience = [], onChange }) => {
   };
 
   const updateDraft = (field, value) => {
-    setDraft((prev) => ({ ...prev, [field]: value }));
+    setDraft((prev) => {
+      const next = { ...prev, [field]: value };
+      if (field === 'startDate' && !next.current && next.endDate && next.startDate > next.endDate) {
+        next.endDate = next.startDate;
+      } else if (field === 'endDate' && next.startDate && next.endDate < next.startDate) {
+        next.startDate = next.endDate;
+      }
+      return next;
+    });
   };
 
   const renderForm = () => (

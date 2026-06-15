@@ -68,8 +68,28 @@ export const ProfileForm = () => {
   };
 
   const handleInput = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+
+    if (name === 'name' || name === 'targetRole') {
+      value = value.replace(/[^a-zA-Z\s\-']/g, ''); // allow spaces, hyphens, apostrophes
+    } else if (name === 'phone') {
+      value = value.replace(/[^\d\s+()-]/g, '');
+    } else if (name === 'experience') {
+      value = value.replace(/[^\d]/g, '');
+      if (value !== '' && parseInt(value) > 50) value = '50';
+    } else if (name === 'graduationYear') {
+      value = value.replace(/[^\d]/g, '');
+      if (value !== '' && value.length > 4) value = value.slice(0, 4);
+    }
+
     updateField(name, value);
+  };
+
+  const handleUrlBlur = (e) => {
+    const { name, value } = e.target;
+    if (value && !/^https?:\/\//i.test(value)) {
+      updateField(name, `https://${value}`);
+    }
   };
 
   const handleSave = async (e) => {
@@ -202,15 +222,15 @@ export const ProfileForm = () => {
             <div className="space-y-5 max-w-2xl">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">GitHub</label>
-                <input type="url" name="github" value={form.github || ''} onChange={handleInput} className={inputClass} placeholder="https://github.com/username" />
+                <input type="url" name="github" value={form.github || ''} onChange={handleInput} onBlur={handleUrlBlur} className={inputClass} placeholder="https://github.com/username" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">LinkedIn</label>
-                <input type="url" name="linkedin" value={form.linkedin || ''} onChange={handleInput} className={inputClass} placeholder="https://linkedin.com/in/username" />
+                <input type="url" name="linkedin" value={form.linkedin || ''} onChange={handleInput} onBlur={handleUrlBlur} className={inputClass} placeholder="https://linkedin.com/in/username" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Portfolio</label>
-                <input type="url" name="portfolio" value={form.portfolio || ''} onChange={handleInput} className={inputClass} placeholder="https://yourportfolio.com" />
+                <input type="url" name="portfolio" value={form.portfolio || ''} onChange={handleInput} onBlur={handleUrlBlur} className={inputClass} placeholder="https://yourportfolio.com" />
               </div>
             </div>
           )}
