@@ -26,11 +26,7 @@ export const ProjectsSection = ({ data = [], onChange }) => {
       setDraft({ ...draft, url: `https://${val}` });
     }
   };
-    if (!draft.title.trim()) return;
-    if (isAdding) onChange([...data, draft]);
-    else { const u = [...data]; u[editIdx] = draft; onChange(u); }
-    cancel();
-  };
+
 
   const remove = (i) => { onChange(data.filter((_, j) => j !== i)); if (editIdx === i) cancel(); };
 
