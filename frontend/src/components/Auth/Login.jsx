@@ -18,6 +18,14 @@ export const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleEmailChange = (e) => {
+    let val = e.target.value.replace(/[^a-zA-Z0-9@._-]/g, '');
+    if (val.length > 0 && !/^[a-zA-Z0-9]/.test(val)) {
+      val = val.replace(/^[^a-zA-Z0-9]+/, '');
+    }
+    setEmail(val);
+  };
+
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -112,7 +120,7 @@ export const Login = () => {
                 type="email"
                 data-testid="login-email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 className="input"
                 required
               />

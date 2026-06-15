@@ -14,6 +14,14 @@ export const ForgotPassword = () => {
   const [devOtp, setDevOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleEmailChange = (e) => {
+    let val = e.target.value.replace(/[^a-zA-Z0-9@._-]/g, '');
+    if (val.length > 0 && !/^[a-zA-Z0-9]/.test(val)) {
+      val = val.replace(/^[^a-zA-Z0-9]+/, '');
+    }
+    setEmail(val);
+  };
+
   const handleRequest = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -75,7 +83,7 @@ export const ForgotPassword = () => {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
                 className="input"
                 required
               />
@@ -88,7 +96,7 @@ export const ForgotPassword = () => {
           <form onSubmit={handleReset} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" required />
+              <input type="email" value={email} onChange={handleEmailChange} className="input" required />
             </div>
             <div>
               <label className="block text-sm font-medium mb-2">Reset code</label>

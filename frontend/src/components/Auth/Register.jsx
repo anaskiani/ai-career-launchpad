@@ -23,6 +23,11 @@ export const Register = () => {
     
     if (name === 'name') {
       value = value.replace(/[^a-zA-Z\s]/g, '');
+    } else if (name === 'email') {
+      value = value.replace(/[^a-zA-Z0-9@._-]/g, '');
+      if (value.length > 0 && !/^[a-zA-Z0-9]/.test(value)) {
+        value = value.replace(/^[^a-zA-Z0-9]+/, '');
+      }
     }
 
     setFormData(prev => ({
