@@ -1,0 +1,167 @@
+# ============================================================
+# Artillery Load & Stress Testing — AI Career Launchpad
+# ============================================================
+#
+# This config covers:
+#   Phase 1 — Warm-up:   10 users/sec for 30s
+#   Phase 2 — Ramp-up:   ramp 10→100 users/sec over 60s
+#   Phase 3 — Sustained: 100 users/sec for 60s (load test)
+#   Phase 4 — Spike:     spike to 300 users/sec for 15s
+#
+# Run: node node_modules/.bin/artillery run load_tests\artillery.yml
+# Report: node node_modules/.bin/artillery run --output load_tests\results.json load_tests\artillery.yml
+#         node node_modules/.bin/artillery report load_tests\results.json
+# ============================================================
+
+config:
+  target: "http://localhost:5000"
+  phases:
+    # Phase 1: Warm-up — light traffic to prime connection pools
+    - name: "Warm-up"
+      duration: 30
+      arrivalRate: 5
+      rampTo: 10
+
+    # Phase 2: Ramp-up — gradually increase to load level
+    - name: "Ramp-up"
+      duration: 60
+      arrivalRate: 10
+      rampTo: 100
+
+    # Phase 3: Sustained Load — hold at peak for 60s
+    - name: "Sustained Load"
+      duration: 60
+      arrivalRate: 100
+
+    # Phase 4: Spike Test — sudden burst to simulate viral traffic
+    - name: "Spike"
+      duration: 15
+      arrivalRate: 300
+
+  # Shared HTTP defaults
+  http:
+    timeout: 15             # fail after 15s with no response
+    pool: 20                # connection pool size
+
+  # Success thresholds — test FAILS if these are breached
+  ensure:
+    thresholds:
+      - http.response_time.p99: 3000    # 99th percentile < 3s
+      - http.response_time.p95: 2000    # 95th percentile < 2s
+      - http.response_time.median: 500  # median < 500ms
+      - http.codes.5xx: 0               # zero 500 errors allowed
+
+  # Variables used across scenarios
+  variables:
+    validEmail: "dev@localhost.com"
+    validPassword: "devpassword"
+    testEmail: "loadtest_{{ $randomNumber(1,999999) }}@test.com"
+
+# ============================================================
+# SCENARIOS — mix of real user journeys
+# ============================================================
+scenarios:
+  # ── Scenario 1: Anonymous public endpoint (weight: 30%) ──────────────────
+  - name: "Health Check (unauthenticated)"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/health"
+          expect:
+            - statusCode: 200
+
+  # ── Scenario 2: Auth validation stress (weight: 25%) ────────────────────
+  - name: "Auth Validation — invalid inputs rejected fast"
+    weight: 25
+    flow:
+      # Missing email → should return 400 quickly (no DB hit)
+      - post:
+          url: "/api/auth/login"
+          json:
+            password: "somepassword"
+          expect:
+            - statusCode: 400
+
+      # Malformed email → should return 400 quickly (no DB hit)
+      - post:
+          url: "/api/auth/register"
+          json:
+            name: "Load Test User"
+            email: "not-an-email"
+            password: "pass123"
+          expect:
+            - statusCode: 400
+
+      # Empty body → should return 400 quickly
+      - post:
+          url: "/api/auth/login"
+          json: {}
+          expect:
+            - statusCode:
+                - 400
+                - 401
+
+  # ── Scenario 3: Protected route rejection (weight: 25%) ─────────────────
+  - name: "Auth Guard — protected routes reject without token"
+    weight: 25
+    flow:
+      - get:
+          url: "/api/users/profile"
+          expect:
+            - statusCode: 401
+
+      - get:
+          url: "/api/skills/roles"
+          expect:
+            - statusCode: 401
+
+      - get:
+          url: "/api/skills/history"
+          expect:
+            - statusCode: 401
+
+      - post:
+          url: "/api/skills/analyze"
+          json:
+            targetRole: "Frontend Developer"
+          expect:
+            - statusCode: 401
+
+      - get:
+          url: "/api/dashboard"
+          expect:
+            - statusCode: 401
+
+  # ── Scenario 4: 404 routing (weight: 10%) ────────────────────────────────
+  - name: "Unknown routes return 404 gracefully"
+    weight: 10
+    flow:
+      - get:
+          url: "/api/nonexistent-endpoint"
+          expect:
+            - statusCode: 404
+
+      - get:
+          url: "/api/auth/this-does-not-exist"
+          expect:
+            - statusCode: 404
+
+      - post:
+          url: "/api/completely-wrong"
+          json:
+            data: "test"
+          expect:
+            - statusCode: 404
+
+  # ── Scenario 5: Rate limiter behaviour (weight: 10%) ────────────────────
+  - name: "Rate Limiter — rapid repeated requests"
+    weight: 10
+    flow:
+      # Fire 10 requests in quick succession — should either 200 or 429
+      - loop:
+          - get:
+              url: "/api/health"
+              capture:
+                - json: "$.status"
+                  as: "healthStatus"
+        count: 10

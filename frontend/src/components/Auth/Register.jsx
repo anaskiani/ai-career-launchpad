@@ -98,8 +98,9 @@ export const Register = () => {
         {step === 'details' && (
           <form onSubmit={handleRegister} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Full Name</label>
+              <label htmlFor="name" className="block text-sm font-medium mb-2">Full Name</label>
               <input
+                id="name"
                 type="text"
                 name="name"
                 value={formData.name}
@@ -110,8 +111,9 @@ export const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
               <input
+                id="email"
                 type="email"
                 name="email"
                 value={formData.email}
@@ -122,8 +124,9 @@ export const Register = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-2">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium mb-2">Password</label>
               <input
+                id="password"
                 type="password"
                 name="password"
                 value={formData.password}
@@ -165,8 +168,9 @@ export const Register = () => {
           <form onSubmit={handleEmailVerification} className="space-y-4">
             <p className="text-gray-600">Enter the OTP sent to {formData.email}</p>
             <div>
-              <label className="block text-sm font-medium mb-2">OTP</label>
+              <label htmlFor="otp" className="block text-sm font-medium mb-2">OTP</label>
               <input
+                id="otp"
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}

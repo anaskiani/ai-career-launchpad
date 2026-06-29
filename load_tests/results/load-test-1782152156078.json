@@ -1,0 +1,62 @@
+{
+  "timestamp": "2026-06-22T18:15:56.077Z",
+  "target": "http://127.0.0.1:5000",
+  "summary": [
+    {
+      "name": "Health Endpoint (GET /api/health)",
+      "passed": false,
+      "rps": 7325,
+      "p99": 16,
+      "errors": 0,
+      "non2xx": 0,
+      "total": 146493
+    },
+    {
+      "name": "Auth Validation (POST /api/auth/login — empty body)",
+      "passed": false,
+      "rps": 4710,
+      "p99": 37,
+      "errors": 0,
+      "non2xx": 141285,
+      "total": 141285
+    },
+    {
+      "name": "Protected Route Rejection (GET /api/users/profile)",
+      "passed": false,
+      "rps": 197,
+      "p99": 1237,
+      "errors": 0,
+      "non2xx": 5912,
+      "total": 5912
+    },
+    {
+      "name": "Skills Auth Guard (GET /api/skills/roles)",
+      "passed": false,
+      "rps": 157,
+      "p99": 2843,
+      "errors": 0,
+      "non2xx": 3143,
+      "total": 3143
+    },
+    {
+      "name": "Spike Test (500 concurrent → /api/health)",
+      "passed": false,
+      "rps": 5466,
+      "p99": 1613,
+      "errors": 2425,
+      "non2xx": 0,
+      "total": 81985
+    },
+    {
+      "name": "Sustained Load Test (300 concurrent for 60s)",
+      "passed": false,
+      "rps": 6828,
+      "p99": 141,
+      "errors": 87,
+      "non2xx": 0,
+      "total": 409652
+    }
+  ],
+  "passed": 0,
+  "failed": 6
+}

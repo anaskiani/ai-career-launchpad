@@ -10,6 +10,11 @@ import { useAuth } from '../../hooks/useAuth';
 const navigate = vi.fn();
 const login = vi.fn();
 
+vi.mock('@react-oauth/google', () => ({
+  GoogleLogin: () => <button>Mock Google Login</button>,
+  useGoogleOAuth: vi.fn(),
+}));
+
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {

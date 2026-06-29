@@ -8,9 +8,29 @@
     "dev:frontend": "cd frontend && npm run dev",
     "build:backend": "cd backend && npm run build",
     "build:frontend": "cd frontend && npm run build",
-    "start": "cd backend && npm start"
+    "start": "cd backend && npm start",
+    "test:unit": "node --test backend/tests/unit.test.mjs backend/tests/dbHelpers.test.mjs backend/tests/simpleCache.test.mjs backend/tests/chatPrompts.test.mjs",
+    "test:frontend": "cd frontend && npm test",
+    "test:api": "node --test api_tests/test_auth.mjs api_tests/test_skills.mjs api_tests/test_profile.mjs",
+    "test:e2e": "cd e2e && npm run test:gui",
+    "test:all": "npm run test:unit && npm run test:frontend && npm run test:api",
+    "load:quick": "node load_tests/quick_bench.mjs",
+    "load:stress": "node load_tests/stress_test.mjs",
+    "load:rate": "node load_tests/rate_limit_test.mjs",
+    "load:artillery": "node node_modules/.bin/artillery run load_tests/artillery.yml",
+    "load:artillery:report": "node node_modules/.bin/artillery run --output load_tests/results/artillery-results.json load_tests/artillery.yml && node node_modules/.bin/artillery report load_tests/results/artillery-results.json"
   },
-  "keywords": ["MERN", "Career", "AI", "Resume", "Interview"],
+  "keywords": [
+    "MERN",
+    "Career",
+    "AI",
+    "Resume",
+    "Interview"
+  ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "artillery": "^2.0.33",
+    "autocannon": "^8.0.0"
+  }
 }

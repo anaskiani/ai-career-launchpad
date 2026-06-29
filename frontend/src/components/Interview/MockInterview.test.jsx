@@ -20,7 +20,6 @@ const baseStore = {
   fetchHistory: vi.fn(),
   startInterview: vi.fn(),
   updateAnswer: vi.fn(),
-  saveAnswers: vi.fn(),
   submitInterview: vi.fn(),
   loadInterview: vi.fn(),
   clearCurrentInterview: vi.fn(),
@@ -41,17 +40,17 @@ describe('MockInterview', () => {
     });
   });
 
-  it('starts an interview only after a role is selected', async () => {
+  it('starts a quiz only after a role is selected', async () => {
     const user = userEvent.setup();
     render(<MockInterview />);
 
     await user.selectOptions(screen.getByRole('combobox'), 'Frontend Developer');
-    await user.click(screen.getByRole('button', { name: /start interview/i }));
+    await user.click(screen.getByRole('button', { name: /start quiz/i }));
 
     expect(baseStore.startInterview).toHaveBeenCalledWith('Frontend Developer');
   });
 
-  it('renders active questions and saves typed answers through the store', async () => {
+  it('renders active question, selects an option, and submits', async () => {
     const user = userEvent.setup();
     const store = {
       ...baseStore,
@@ -62,7 +61,7 @@ describe('MockInterview', () => {
         questions: [
           {
             question: 'Explain React state.',
-            category: 'Technical',
+            options: ['Option A', 'Option B', 'Option C', 'Option D'],
             answer: '',
           },
         ],
@@ -72,13 +71,15 @@ describe('MockInterview', () => {
 
     render(<MockInterview />);
 
-    expect(screen.getByRole('heading', { name: 'Frontend Developer' })).toBeInTheDocument();
-    fireEvent.change(screen.getByPlaceholderText(/write your answer/i), {
-      target: { value: 'State stores UI data' },
-    });
-    await user.click(screen.getByRole('button', { name: /save responses/i }));
+    // Should see the question
+    expect(screen.getByText('Explain React state.')).toBeInTheDocument();
+    
+    // Select an option
+    await user.click(screen.getByText('Option A'));
+    expect(store.updateAnswer).toHaveBeenCalledWith(0, 'Option A');
 
-    expect(store.updateAnswer).toHaveBeenCalledWith(0, 'State stores UI data');
-    expect(store.saveAnswers).toHaveBeenCalledTimes(1);
+    // Click submit
+    await user.click(screen.getByRole('button', { name: /submit quiz/i }));
+    expect(store.submitInterview).toHaveBeenCalledTimes(1);
   });
 });

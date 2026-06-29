@@ -79,8 +79,9 @@ export const ForgotPassword = () => {
         {step === 'request' ? (
           <form onSubmit={handleRequest} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
+              <label htmlFor="email" className="block text-sm font-medium mb-2">Email</label>
               <input
+                id="email"
                 type="email"
                 value={email}
                 onChange={handleEmailChange}
@@ -95,12 +96,13 @@ export const ForgotPassword = () => {
         ) : (
           <form onSubmit={handleReset} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-2">Email</label>
-              <input type="email" value={email} onChange={handleEmailChange} className="input" required />
+              <label htmlFor="verify-email" className="block text-sm font-medium mb-2">Email</label>
+              <input id="verify-email" type="email" value={email} onChange={handleEmailChange} className="input" required />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">Reset code</label>
+              <label htmlFor="reset-code" className="block text-sm font-medium mb-2">Reset code</label>
               <input
+                id="reset-code"
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
@@ -110,8 +112,9 @@ export const ForgotPassword = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2">New password</label>
+              <label htmlFor="new-password" className="block text-sm font-medium mb-2">New password</label>
               <input
+                id="new-password"
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
