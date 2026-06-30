@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, Menu, Rocket, X } from 'lucide-react';
+import { LogOut, Menu, Rocket, X, FileText, Zap, Briefcase, Users, MessageSquare } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { useProfileStore } from '../../context/profileStore';
@@ -141,6 +141,27 @@ export const Navbar = () => {
                 <NavLink to="/profile" className={mobileNavClass} onClick={closeMobile}>
                   Profile
                 </NavLink>
+
+                <div className="my-3 border-t border-slate-100" />
+                <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Workspace
+                </p>
+                <NavLink to="/resume" className={mobileNavClass} onClick={closeMobile}>
+                  <span className="inline-flex items-center gap-2"><FileText size={16} /> Resume Builder</span>
+                </NavLink>
+                <NavLink to="/skills" className={mobileNavClass} onClick={closeMobile}>
+                  <span className="inline-flex items-center gap-2"><Zap size={16} /> Skill Gap</span>
+                </NavLink>
+                <NavLink to="/jobs" className={mobileNavClass} onClick={closeMobile}>
+                  <span className="inline-flex items-center gap-2"><Briefcase size={16} /> Job Finder</span>
+                </NavLink>
+                <NavLink to="/interview" className={mobileNavClass} onClick={closeMobile}>
+                  <span className="inline-flex items-center gap-2"><Users size={16} /> Skill Quiz</span>
+                </NavLink>
+                <NavLink to="/chatbot" className={mobileNavClass} onClick={closeMobile}>
+                  <span className="inline-flex items-center gap-2"><MessageSquare size={16} /> AI Chatbot</span>
+                </NavLink>
+
                 <button
                   type="button"
                   onClick={() => {
